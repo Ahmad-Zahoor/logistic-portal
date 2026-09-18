@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ customer.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ customer.name }}</h2>
+    <div>
+        <a href="{% url 'customer-update' customer.pk %}" class="btn btn-outline-primary">Edit</a>
+        <a href="{% url 'customer-delete' customer.pk %}" class="btn btn-outline-danger">Delete</a>
+    </div>
+</div>
+<dl class="row">
+    <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{ customer.email|default:"—" }}</dd>
+    <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">{{ customer.phone|default:"—" }}</dd>
+    <dt class="col-sm-3">Address</dt><dd class="col-sm-9">{{ customer.address|default:"—" }}</dd>
+</dl>
+
+<h4>Shipments</h4>
+{% if customer.shipments.all %}
+<ul class="list-group mb-3">
+    {% for shipment in customer.shipments.all %}
+    <li class="list-group-item"><a href="{{ shipment.get_absolute_url }}">{{ shipment.reference_number }}</a> — {{ shipment.get_status_display }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="text-muted">No shipments for this customer.</p>
+{% endif %}
+
+<a href="{% url 'customer-list' %}">&laquo; Back to customers</a>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Shipments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Shipments</h2>
+    <a href="{% url 'shipment-create' %}" class="btn btn-primary">+ New Shipment</a>
+</div>
+
+<form method="get" class="mb-3 d-flex gap-2">
+    <select name="status" class="form-select w-auto" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if value == selected_status %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Reference</th>
+            <th>Customer</th>
+            <th>Route</th>
+            <th>Vehicle</th>
+            <th>Driver</th>
+            <th>Scheduled</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for shipment in object_list %}
+        <tr>
+            <td><a href="{{ shipment.get_absolute_url }}">{{ shipment.reference_number }}</a></td>
+            <td>{{ shipment.customer }}</td>
+            <td>{{ shipment.origin }} &rarr; {{ shipment.destination }}</td>
+            <td>{{ shipment.vehicle|default:"—" }}</td>
+            <td>{{ shipment.driver|default:"—" }}</td>
+            <td>{{ shipment.scheduled_date }}</td>
+            <td>{{ shipment.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted">No shipments found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "logistics/_pagination.html" %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Vehicles{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Vehicles</h2>
+    <a href="{% url 'vehicle-create' %}" class="btn btn-primary">+ New Vehicle</a>
+</div>
+<table class="table table-striped bg-white">
+    <thead>
+        <tr><th>Registration</th><th>Type</th><th>Capacity (kg)</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+        {% for vehicle in object_list %}
+        <tr>
+            <td><a href="{{ vehicle.get_absolute_url }}">{{ vehicle.registration_number }}</a></td>
+            <td>{{ vehicle.vehicle_type|default:"—" }}</td>
+            <td>{{ vehicle.capacity_kg|default:"—" }}</td>
+            <td>{{ vehicle.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">No vehicles found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% include "logistics/_pagination.html" %}
+{% endblock %}

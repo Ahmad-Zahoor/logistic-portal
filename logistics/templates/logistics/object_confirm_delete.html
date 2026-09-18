@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ object }}{% endblock %}
+{% block content %}
+<h2 class="mb-4">Delete {{ model_name|default:"item" }}</h2>
+<p>Are you sure you want to delete <strong>{{ object }}</strong>? This action cannot be undone.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{{ object.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

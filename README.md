@@ -46,12 +46,20 @@ app server).
    **New > Blueprint**, connect your GitHub account, and select this repo.
    Render reads `render.yaml` and provisions a free web service plus a free
    Postgres database automatically.
-3. Click **Apply** — Render builds with `build.sh` (installs deps, runs
-   `collectstatic` and `migrate`) and starts the app with gunicorn.
-4. Once deployed, open a **Shell** for the web service in the Render
-   dashboard and run `python manage.py createsuperuser` to create your
-   login.
-5. Visit the `*.onrender.com` URL Render gives you and log in.
+3. Render will prompt you to fill in three values before deploying:
+   `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, and
+   `DJANGO_SUPERUSER_PASSWORD`. These aren't stored in the repo — they're
+   entered directly into Render's env var UI.
+4. Click **Apply** — Render builds with `build.sh` (installs deps, runs
+   `collectstatic`, `migrate`, then `ensure_superuser`, which creates your
+   login from those env vars if it doesn't already exist) and starts the
+   app with gunicorn.
+5. Visit the `*.onrender.com` URL Render gives you and log in with the
+   username/password you set in step 3.
+
+Note: Render's free web service plan doesn't include Shell access (that's
+a paid-plan feature), which is why the superuser is created automatically
+during the build instead of via `createsuperuser` in a shell.
 
 Free-tier Render web services spin down after inactivity and take ~30–60s
 to wake back up on the next request — upgrade the plan in `render.yaml` if

@@ -14,6 +14,12 @@ dashboard.
   status (pending → picked up → in transit → delivered), and notes.
 - **Vehicles & Drivers** — fleet and staff records with availability status.
 - **Customers** — basic customer records linked to their shipments.
+- **Purchase Orders** — upload a daily CSV sheet to refresh PO data
+  (values, quantities, dates, vendor state, delivery status); each PO also
+  has its own manually-set **Status** (Pending review / In progress / On
+  hold / Completed / Cancelled) that re-uploading the sheet never
+  overwrites, so daily review work sticks. Matched by PO Code: existing
+  POs get updated in place, new codes get created automatically.
 - Full CRUD (create/read/update/delete) for every model, plus the Django
   admin for bulk management.
 - Login-protected — every page requires authentication.
@@ -70,5 +76,7 @@ you need it always-on.
 - `logistic_portal/` — Django project settings and root URL config.
 - `logistics/` — the app: models, views, forms, admin, templates, and URLs
   for tasks, shipments, vehicles, drivers, and customers.
+- `purchase_orders/` — the PO app: model, CSV import logic (`imports.py`),
+  views, templates, and a downloadable CSV template for the daily upload.
 - `templates/` — shared base template and the login page.
 - `render.yaml`, `build.sh` — Render deployment blueprint and build script.

@@ -28,7 +28,9 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# Defaults to True for a plain local `runserver`; Render's render.yaml
+# explicitly sets DEBUG=False for the deployed service.
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h]
 
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "logistics",
+    "purchase_orders",
 ]
 
 MIDDLEWARE = [

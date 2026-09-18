@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Upload POs Sheet{% endblock %}
+{% block content %}
+<h2 class="mb-4">Upload today's POs sheet</h2>
+
+<p class="text-muted">
+    Upload the daily CSV export. Purchase orders are matched by <strong>PO Code</strong>:
+    existing POs get their sheet data refreshed (dates, values, quantities, vendor state,
+    delivery status) — your manually-set <strong>Status</strong> is never overwritten by an
+    upload. New PO codes are created automatically with status "Pending review".
+</p>
+
+<p>
+    <a href="{% static 'purchase_orders/po_template.csv' %}" class="btn btn-sm btn-outline-secondary">
+        Download CSV template
+    </a>
+</p>
+
+<form method="post" enctype="multipart/form-data" class="row g-3">
+    {% csrf_token %}
+    <div class="col-auto">
+        {{ form.file }}
+        {% for error in form.file.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>
+
+<p class="mt-4"><a href="{% url 'po-list' %}">&laquo; Back to Purchase Orders</a></p>
+{% endblock %}

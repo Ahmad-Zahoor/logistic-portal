@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}PO {{ purchaseorder.po_code }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>PO {{ purchaseorder.po_code }}</h2>
+    {% include "purchase_orders/_status_form.html" with po=purchaseorder next_url=request.get_full_path %}
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Vendor</dt><dd class="col-sm-9">{{ purchaseorder.vendor }}</dd>
+    <dt class="col-sm-3">Project Code</dt><dd class="col-sm-9">{{ purchaseorder.project_code|default:"—" }}</dd>
+    <dt class="col-sm-3">Order Date</dt><dd class="col-sm-9">{{ purchaseorder.order_date }}</dd>
+    <dt class="col-sm-3">Delivery Date</dt><dd class="col-sm-9">{{ purchaseorder.delivery_date|default:"—" }}</dd>
+    <dt class="col-sm-3">Payment Term</dt><dd class="col-sm-9">{{ purchaseorder.payment_term|default:"—" }}</dd>
+    <dt class="col-sm-3">Net Value</dt><dd class="col-sm-9">{{ purchaseorder.currency }} {{ purchaseorder.net_value }}</dd>
+    <dt class="col-sm-3">Total Qty</dt><dd class="col-sm-9">{{ purchaseorder.total_qty }}</dd>
+    <dt class="col-sm-3">Received Qty</dt><dd class="col-sm-9">{{ purchaseorder.received_qty }} ({{ purchaseorder.received_pct|floatformat:1 }}%)</dd>
+    <dt class="col-sm-3">Invoiced Value</dt><dd class="col-sm-9">{{ purchaseorder.currency }} {{ purchaseorder.invoiced_value }} ({{ purchaseorder.invoiced_pct|floatformat:1 }}%)</dd>
+    <dt class="col-sm-3">Paid Value</dt><dd class="col-sm-9">{{ purchaseorder.currency }} {{ purchaseorder.paid_value }} ({{ purchaseorder.paid_pct|floatformat:1 }}%)</dd>
+    <dt class="col-sm-3">Sheet State</dt><dd class="col-sm-9">{{ purchaseorder.source_state|default:"—" }}</dd>
+    <dt class="col-sm-3">DLV Status (sheet)</dt><dd class="col-sm-9">{{ purchaseorder.dlv_status|default:"—" }}</dd>
+    <dt class="col-sm-3">Last imported</dt><dd class="col-sm-9">{{ purchaseorder.last_imported_at|default:"Never (manually created)" }}</dd>
+</dl>
+
+<a href="{% url 'po-list' %}">&laquo; Back to Purchase Orders</a>
+{% endblock %}

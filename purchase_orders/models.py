@@ -29,8 +29,9 @@ class PurchaseOrder(models.Model):
     dlv_status = models.CharField(max_length=50, blank=True)
     last_imported_at = models.DateTimeField(null=True, blank=True)
 
-    # Managed by hand in the portal — re-importing the sheet never touches this.
+    # Managed by hand in the portal — re-importing the sheet never touches these.
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING_REVIEW)
+    eta_status = models.CharField(max_length=255, blank=True, default="")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

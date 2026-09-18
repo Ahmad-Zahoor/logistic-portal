@@ -33,12 +33,10 @@
             <th>DLV Date</th>
             <th>Vendor</th>
             <th>Project</th>
-            <th>Net Value</th>
             <th>Received %</th>
             <th>Invoiced %</th>
-            <th>Paid %</th>
-            <th>Sheet State</th>
             <th>DLV Status</th>
+            <th>ETA Status</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -50,18 +48,18 @@
             <td>{{ po.delivery_date|default:"—" }}</td>
             <td>{{ po.vendor }}</td>
             <td>{{ po.project_code|default:"—" }}</td>
-            <td>{{ po.currency }} {{ po.net_value }}</td>
             <td>{{ po.received_pct|floatformat:0 }}%</td>
             <td>{{ po.invoiced_pct|floatformat:0 }}%</td>
-            <td>{{ po.paid_pct|floatformat:0 }}%</td>
-            <td>{{ po.source_state|default:"—" }}</td>
             <td>{{ po.dlv_status|default:"—" }}</td>
+            <td style="min-width: 12rem;">
+                {% include "purchase_orders/_eta_status_form.html" with po=po next_url=request.get_full_path %}
+            </td>
             <td style="min-width: 12rem;">
                 {% include "purchase_orders/_status_form.html" with po=po next_url=request.get_full_path %}
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="12" class="text-center text-muted">No purchase orders yet — upload today's sheet to get started.</td></tr>
+        <tr><td colspan="10" class="text-center text-muted">No purchase orders yet — upload today's sheet to get started.</td></tr>
         {% endfor %}
     </tbody>
 </table>

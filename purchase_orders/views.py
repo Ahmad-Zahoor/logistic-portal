@@ -12,6 +12,17 @@ from .forms import POUploadForm
 from .imports import import_purchase_orders
 from .models import PurchaseOrder
 
+ETA_STATUS_MAX_LENGTH = PurchaseOrder._meta.get_field("eta_status").max_length
+
+
+def _redirect_next(request, fallback_url_name="po-list"):
+    next_url = request.POST.get("next")
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        return redirect(next_url)
+    return redirect(reverse(fallback_url_name))
+
 
 class POListView(LoginRequiredMixin, ListView):
     model = PurchaseOrder
@@ -91,9 +102,18 @@ class POStatusUpdateView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Invalid status.")
 
-        next_url = request.POST.get("next")
-        if next_url and url_has_allowed_host_and_scheme(
-            next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
-        ):
-            return redirect(next_url)
-        return redirect(reverse("po-list"))
+        return _redirect_next(request)
+
+
+class POETAStatusUpdateView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        po = get_object_or_404(PurchaseOrder, pk=pk)
+        eta_status = request.POST.get("eta_status", "").strip()
+        if len(eta_status) > ETA_STATUS_MAX_LENGTH:
+            messages.error(request, f"ETA status is too long (max {ETA_STATUS_MAX_LENGTH} characters).")
+        else:
+            po.eta_status = eta_status
+            po.save(update_fields=["eta_status", "updated_at"])
+            messages.success(request, f"{po.po_code} ETA status updated.")
+
+        return _redirect_next(request)

@@ -24,6 +24,14 @@
     </div>
 </form>
 
+{% if hiding_completed_cancelled %}
+<p class="text-muted small">
+    Showing active POs only — Completed and Cancelled POs are hidden here but
+    still saved. Search by PO code/vendor/project, or filter by status above,
+    to find them.
+</p>
+{% endif %}
+
 <div class="table-responsive">
 <table class="table table-striped bg-white align-middle">
     <thead>

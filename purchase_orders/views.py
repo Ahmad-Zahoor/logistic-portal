@@ -29,13 +29,21 @@ class POListView(LoginRequiredMixin, ListView):
     template_name = "purchase_orders/po_list.html"
     paginate_by = 50
 
+    #: Hidden from the default (unfiltered, unsearched) list — still in the
+    #: database and reachable by searching or explicitly filtering by status.
+    HIDDEN_BY_DEFAULT = (PurchaseOrder.Status.COMPLETED, PurchaseOrder.Status.CANCELLED)
+
     def get_queryset(self):
         qs = super().get_queryset()
         status = self.request.GET.get("status")
         vendor = self.request.GET.get("vendor")
         query = self.request.GET.get("q")
+
         if status:
             qs = qs.filter(status=status)
+        elif not (vendor or query):
+            qs = qs.exclude(status__in=self.HIDDEN_BY_DEFAULT)
+
         if vendor:
             qs = qs.filter(vendor__icontains=vendor)
         if query:
@@ -48,10 +56,14 @@ class POListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        status = self.request.GET.get("status", "")
+        vendor = self.request.GET.get("vendor", "")
+        query = self.request.GET.get("q", "")
         context["status_choices"] = PurchaseOrder.Status.choices
-        context["selected_status"] = self.request.GET.get("status", "")
-        context["vendor_query"] = self.request.GET.get("vendor", "")
-        context["query"] = self.request.GET.get("q", "")
+        context["selected_status"] = status
+        context["vendor_query"] = vendor
+        context["query"] = query
+        context["hiding_completed_cancelled"] = not (status or vendor or query)
         context["querystring"] = self.request.GET.urlencode()
         return context
 
